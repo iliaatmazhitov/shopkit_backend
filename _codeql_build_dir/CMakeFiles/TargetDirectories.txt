@@ -1,0 +1,3 @@
+/home/runner/work/shopkit_backend/shopkit_backend/_codeql_build_dir/CMakeFiles/shopkit_backend.dir
+/home/runner/work/shopkit_backend/shopkit_backend/_codeql_build_dir/CMakeFiles/edit_cache.dir
+/home/runner/work/shopkit_backend/shopkit_backend/_codeql_build_dir/CMakeFiles/rebuild_cache.dir

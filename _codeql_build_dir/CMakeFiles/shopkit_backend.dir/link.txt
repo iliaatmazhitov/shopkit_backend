@@ -1,0 +1,1 @@
+/home/runner/work/shopkit_backend/.codeql-scratch/dbs/cpp/working/autobuild/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/shopkit_backend.dir/link.d CMakeFiles/shopkit_backend.dir/main.cpp.o -o shopkit_backend
