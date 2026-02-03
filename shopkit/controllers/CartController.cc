@@ -101,7 +101,7 @@ void CartController::getCart(const HttpRequestPtr &req,
     int shop_id = 0;
     try {
         shop_id = std::stoi(shop_id_param);
-    } catch (const std::exception &e) {
+    } catch (const std::exception &) {
         Json::Value error;
         error["error"] = "Invalid shop_id parameter";
         auto resp = HttpResponse::newHttpJsonResponse(error);
@@ -190,7 +190,7 @@ void CartController::clearCart(const HttpRequestPtr &req,
     int shop_id = 0;
     try {
         shop_id = std::stoi(shop_id_param);
-    } catch (const std::exception &e) {
+    } catch (const std::exception &) {
         Json::Value error;
         error["error"] = "Invalid shop_id parameter";
         auto resp = HttpResponse::newHttpJsonResponse(error);

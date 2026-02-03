@@ -5,6 +5,7 @@
 ### Base Configuration
 
 ```typescript
+// Replace with your actual Railway deployment URL
 const API_BASE = 'https://your-production-url.railway.app/api';
 
 interface ShopKitConfig {
