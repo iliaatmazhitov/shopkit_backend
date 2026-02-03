@@ -1,6 +1,7 @@
 #include "CartController.h"
 #include <drogon/orm/DbClient.h>
 #include <json/writer.h>
+#include <sstream>
 
 using namespace drogon;
 using namespace drogon::orm;
