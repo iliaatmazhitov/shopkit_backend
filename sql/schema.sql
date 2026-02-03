@@ -67,3 +67,15 @@ CREATE INDEX IF NOT EXISTS idx_orders_shop_id ON orders(shop_id);
 CREATE INDEX IF NOT EXISTS idx_orders_tg_user ON orders(telegram_user_id);
 CREATE INDEX IF NOT EXISTS idx_shops_token ON shops(shop_token);
 CREATE INDEX IF NOT EXISTS idx_shops_owner ON shops(owner_tg_id);
+-- Carts table for user shopping carts
+CREATE TABLE IF NOT EXISTS carts (
+    id SERIAL PRIMARY KEY,
+    telegram_user_id BIGINT NOT NULL,
+    shop_id INTEGER NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
+    items JSONB NOT NULL,
+    updated_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(telegram_user_id, shop_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_carts_user ON carts(telegram_user_id);
+CREATE INDEX IF NOT EXISTS idx_carts_shop ON carts(shop_id);

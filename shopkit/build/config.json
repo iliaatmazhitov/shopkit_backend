@@ -1,0 +1,38 @@
+{
+  "app": {
+    "threads_num": 4,
+    "idle_connection_timeout": 60,
+    "enable_session": true,
+    "session_timeout": 86400,
+    "document_root": "./public",
+    "upload_path": "./uploads"
+  },
+  "db_clients": [
+    {
+      "name": "default",
+      "rdbms": "postgresql",
+      "host": "127.0.0.1",
+      "port": 5432,
+      "dbname": "shopkit",
+      "user": "ilya",
+      "passwd": "",
+      "connection_number": 10,
+      "is_fast": false,
+      "timeout": 5.0,
+      "client_encoding": "utf8"
+    }
+  ],
+  "listeners": [
+    {
+      "address": "0.0.0.0",
+      "port": 8080,
+      "https": false
+    }
+  ],
+  "log": {
+    "log_path": "./logs",
+    "logfile_base_name": "shopkit",
+    "log_size_limit": 100000000,
+    "log_level": "DEBUG"
+  }
+}
