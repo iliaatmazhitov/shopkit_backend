@@ -1,36 +1,74 @@
 #include <drogon/drogon.h>
 #include <iostream>
+#include <cstdlib>
+#include <regex>
 
 int main() {
     std::cout << "========= ShopKit Backend Starting =========" << std::endl;
     
     try {
+        // Порт сервера
+        int port = 8080;
+        if (std::getenv("PORT")) {
+            port = std::stoi(std::getenv("PORT"));
+        }
+        
         drogon::app()
-            .setLogLevel(trantor::Logger::kDebug)
-            .addListener("0.0.0.0", 8080)
+            .setLogLevel(trantor::Logger::kInfo)
+            .addListener("0.0.0.0", port)
             .setThreadNum(4);
         
-        // Create database client directly
-        // Note: These hardcoded values are for convenience. For production, use environment variables
-        // or consider using loadConfigFile() with config.json
+        // Парсинг DATABASE_URL от Railway
+        std::string database_url = std::getenv("DATABASE_URL") ? std::getenv("DATABASE_URL") : "";
+        
+        if (database_url.empty()) {
+            std::cerr << "❌ ERROR: DATABASE_URL not set!" << std::endl;
+            std::cerr << "Set it in Railway dashboard or use local config" << std::endl;
+            return 1;
+        }
+        
+        std::cout << "DATABASE_URL found, parsing..." << std::endl;
+        
+        // Regex для парсинга: postgresql://user:password@host:port/database
+        std::regex url_regex("postgres(?:ql)?://([^:]+):([^@]*)@([^:]+):(\\d+)/([^?]+)");
+        std::smatch matches;
+        
+        if (!std::regex_search(database_url, matches, url_regex)) {
+            std::cerr << "❌ ERROR: Invalid DATABASE_URL format!" << std::endl;
+            std::cerr << "Expected: postgresql://user:password@host:port/database" << std::endl;
+            return 1;
+        }
+        
+        std::string db_user = matches[1];
+        std::string db_password = matches[2];
+        std::string db_host = matches[3];
+        int db_port = std::stoi(matches[4]);
+        std::string db_name = matches[5];
+        
+        std::cout << "Database config:" << std::endl;
+        std::cout << "  Host: " << db_host << std::endl;
+        std::cout << "  Port: " << db_port << std::endl;
+        std::cout << "  Database: " << db_name << std::endl;
+        std::cout << "  User: " << db_user << std::endl;
+        
+        // Создаём клиент БД
         drogon::app().createDbClient(
-            "postgresql",       // rdbms type
-            "127.0.0.1",        // host
-            5432,               // port
-            "shopkit",          // database name
-            "ilya",             // user
-            "",                 // password (empty)
-            10,                 // connection pool size
-            "",                 // filename (unused for PostgreSQL)
-            "default",          // client name
-            false,              // is_fast mode
-            "utf8"              // character set
+            "postgresql",
+            db_host,
+            db_port,
+            db_name,
+            db_user,
+            db_password,
+            10,           // connection pool size
+            "",           // filename (unused for PostgreSQL)
+            "default",    // client name
+            false,        // is_fast mode
+            "utf8"        // character set
         );
         
-        std::cout << "✅ Database configured: postgresql://ilya@127.0.0.1:5432/shopkit" << std::endl;
-        std::cout << "🚀 Starting HTTP server on http://0.0.0.0:8080" << std::endl;
+        std::cout << "✅ Database client created successfully" << std::endl;
+        std::cout << "🚀 Starting HTTP server on http://0.0.0.0:" << port << std::endl;
         
-        // Now run the app - DB client will be available inside controllers
         drogon::app().run();
         
     } catch (const std::exception &e) {
@@ -38,6 +76,5 @@ int main() {
         return 1;
     }
     
-    std::cout << "Server stopped" << std::endl;
     return 0;
 }
