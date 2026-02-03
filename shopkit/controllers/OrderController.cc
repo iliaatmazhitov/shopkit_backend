@@ -190,9 +190,9 @@ void OrderController::getOrderDetail(
             std::string items_str = row["items"].as<std::string>();
             Json::CharReaderBuilder readerBuilder;
             Json::Value items;
-            std::istringstream iss(items_str);
+            std::istringstream itemsStream(items_str);
             std::string errs;
-            if (Json::parseFromStream(readerBuilder, iss, &items, &errs)) {
+            if (Json::parseFromStream(readerBuilder, itemsStream, &items, &errs)) {
                 order["items"] = items;
             } else {
                 order["items"] = Json::arrayValue;

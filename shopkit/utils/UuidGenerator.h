@@ -7,9 +7,9 @@
 class UuidGenerator {
 public:
     static std::string generate() {
-        std::random_device rd;
-        std::mt19937_64 gen(rd());
-        std::uniform_int_distribution<uint64_t> dis;
+        thread_local std::random_device rd;
+        thread_local std::mt19937_64 gen(rd());
+        thread_local std::uniform_int_distribution<uint64_t> dis;
 
         // Генерируем UUID v4 формат: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
         uint64_t random1 = dis(gen);
@@ -28,7 +28,7 @@ public:
         ss << "4" << std::setw(3) << ((random1 >> 4) & 0xFFF) << "-";
         
         // 4 символа с вариантом
-        ss << std::setw(1) << (8 | (random2 >> 62 & 0x3))
+        ss << std::setw(1) << (8 | ((random2 >> 62) & 0x3))
            << std::setw(3) << ((random2 >> 48) & 0xFFF) << "-";
         
         // Последние 12 символов
