@@ -1,5 +1,7 @@
 #include "OrderController.h"
 #include <drogon/orm/DbClient.h>
+#include <algorithm>
+#include <memory>
 
 using namespace drogon;
 using namespace drogon::orm;
@@ -128,9 +130,21 @@ void OrderController::getOrder(
 
             // Parse JSONB items
             std::string items_str = row["items"].as<std::string>();
-            Json::Reader reader;
+            Json::CharReaderBuilder builder;
+            std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
             Json::Value items;
-            reader.parse(items_str, items);
+            std::string errors;
+            bool parsingSuccessful = reader->parse(
+                items_str.c_str(),
+                items_str.c_str() + items_str.size(),
+                &items,
+                &errors
+            );
+            
+            if (!parsingSuccessful) {
+                LOG_ERROR << "Failed to parse items JSON: " << errors;
+                items = Json::arrayValue; // fallback to empty array
+            }
             order["items"] = items;
 
             order["shop"] = Json::objectValue;
@@ -226,6 +240,17 @@ void OrderController::updateOrderStatus(
     }
 
     std::string status = (*json)["status"].asString();
+
+    // Validate status value
+    const std::vector<std::string> validStatuses = {"pending", "processing", "completed", "cancelled"};
+    if (std::find(validStatuses.begin(), validStatuses.end(), status) == validStatuses.end()) {
+        Json::Value error;
+        error["error"] = "Invalid status value. Must be one of: pending, processing, completed, cancelled";
+        auto resp = HttpResponse::newHttpJsonResponse(error);
+        resp->setStatusCode(k400BadRequest);
+        callback(resp);
+        return;
+    }
 
     auto dbClient = app().getDbClient();
     if (!dbClient) {

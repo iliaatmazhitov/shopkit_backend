@@ -10,7 +10,9 @@ int main() {
             .addListener("0.0.0.0", 8080)
             .setThreadNum(4);
         
-        // Create database client directly (config.json db settings will be used automatically if available)
+        // Create database client directly
+        // Note: These hardcoded values are for convenience. For production, use environment variables
+        // or consider using loadConfigFile() with config.json
         drogon::app().createDbClient(
             "postgresql",       // rdbms type
             "127.0.0.1",        // host
