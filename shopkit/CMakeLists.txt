@@ -23,7 +23,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(${PROJECT_NAME} main.cc
         controllers/ShopController.cc
-        controllers/ProductController.cc)
+        controllers/ProductController.cc
+        controllers/OrderController.cc)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different

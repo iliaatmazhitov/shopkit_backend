@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS orders (
     status VARCHAR(50) DEFAULT 'pending',
     payment_method VARCHAR(50),
     notes TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
     );
 
 CREATE TABLE IF NOT EXISTS users (
