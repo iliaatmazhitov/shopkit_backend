@@ -8,7 +8,6 @@ class ProductController : public HttpController<ProductController>
 public:
     METHOD_LIST_BEGIN
 
-        // Public API
         ADD_METHOD_TO(ProductController::getProducts,
                       "/api/products/{1}",
                       Get);
@@ -17,7 +16,6 @@ public:
                       "/api/products/detail/{1}",
                       Get);
 
-        // Admin API
         ADD_METHOD_TO(ProductController::createProduct,
                       "/api/admin/products",
                       Post);

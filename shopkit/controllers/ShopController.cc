@@ -256,7 +256,6 @@ void ShopController::updateShop(
         return;
     }
 
-    // Проверка владельца
     std::string auth_header = req->getHeader("X-Owner-TG-ID");
     if (auth_header.empty()) {
         auth_header = req->getParameter("owner_tg_id");
@@ -309,7 +308,6 @@ void ShopController::updateShop(
                     return;
                 }
 
-                // ✅ Строим SQL вручную
                 std::vector<std::string> setClauses;
                 int paramIndex = 1;
 
@@ -355,7 +353,6 @@ void ShopController::updateShop(
                                   " WHERE shop_token = $" + std::to_string(paramIndex) +
                                   " RETURNING title, currency, updated_at";
 
-                // ✅ Выполняем UPDATE с правильными параметрами
                 auto binder = *dbClient << sql;
 
                 if (has_title) binder << title_val;

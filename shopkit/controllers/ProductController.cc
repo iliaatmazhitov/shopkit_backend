@@ -300,7 +300,6 @@ void ProductController::updateProduct(
     auto executeUpdate = [=, callback = std::move(callback)]() mutable {
         auto binder = *dbClient << sql;
 
-        // Добавляем параметры в правильном порядке
         if (has_title) binder << title_val;
         if (has_price) binder << price_val;
         if (has_description) binder << description_val;

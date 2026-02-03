@@ -21,7 +21,6 @@ void CartController::saveCart(const HttpRequestPtr &req,
         return;
     }
 
-    // Validate required fields
     if (!json->isMember("telegram_user_id") || !json->isMember("shop_id") || 
         !json->isMember("items")) {
         Json::Value error;
@@ -36,7 +35,6 @@ void CartController::saveCart(const HttpRequestPtr &req,
     int shop_id = (*json)["shop_id"].asInt();
     Json::Value items = (*json)["items"];
 
-    // Convert items to JSON string
     Json::StreamWriterBuilder builder;
     builder["indentation"] = "";
     std::string items_json = Json::writeString(builder, items);
@@ -140,7 +138,6 @@ void CartController::getCart(const HttpRequestPtr &req,
                 return;
             }
 
-            // Parse items JSON
             Json::CharReaderBuilder reader;
             Json::Value items;
             std::string items_str = result[0]["items"].as<std::string>();

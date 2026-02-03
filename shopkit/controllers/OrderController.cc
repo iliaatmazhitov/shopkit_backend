@@ -21,7 +21,6 @@ void OrderController::createOrder(const HttpRequestPtr &req,
         return;
     }
 
-    // Validate required fields
     if (!json->isMember("shop_id") || !json->isMember("items") || 
         !json->isMember("total_price") || !json->isMember("currency")) {
         Json::Value error;
@@ -43,7 +42,6 @@ void OrderController::createOrder(const HttpRequestPtr &req,
     std::string payment_method = json->get("payment_method", "").asString();
     std::string notes = json->get("notes", "").asString();
 
-    // Convert items to JSON string
     Json::StreamWriterBuilder builder;
     builder["indentation"] = "";
     std::string items_json = Json::writeString(builder, items);
@@ -149,7 +147,6 @@ void OrderController::getUserOrders(const HttpRequestPtr &req,
                 order["status"] = row["status"].as<std::string>();
                 order["created_at"] = row["created_at"].as<std::string>();
 
-                // Parse items JSON
                 Json::CharReaderBuilder reader;
                 Json::Value items;
                 std::string items_str = row["items"].as<std::string>();
