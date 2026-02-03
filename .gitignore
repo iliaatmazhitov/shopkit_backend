@@ -1,2 +1,9 @@
 # Project exclude paths
 /cmake-build-debug/
+/build/
+/uploads/
+*.o
+*.a
+*.so
+*.dylib
+*.log

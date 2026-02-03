@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS shops (
 CREATE TABLE IF NOT EXISTS products (
                                         id SERIAL PRIMARY KEY,
                                         shop_id INTEGER NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
-    product_id UUID DEFAULT gen_random_uuid() UNIQUE,
+    product_id VARCHAR(36) NOT NULL UNIQUE,
     title VARCHAR(255) NOT NULL,
     price INTEGER NOT NULL CHECK (price > 0),
     currency VARCHAR(3) DEFAULT 'RUB',
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS orders (
                                       id SERIAL PRIMARY KEY,
                                       shop_id INTEGER NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
-    order_id UUID DEFAULT gen_random_uuid() UNIQUE,
+    order_id VARCHAR(36) NOT NULL UNIQUE,
     customer_name VARCHAR(255),
     telegram_user_id BIGINT,
     customer_phone VARCHAR(20),
