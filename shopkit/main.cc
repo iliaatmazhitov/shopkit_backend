@@ -4,7 +4,9 @@
 #include <regex>
 
 int main() {
-    std::cout << "========= ShopKit Backend Starting =========" << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "ShopKit Backend Starting" << std::endl;
+    std::cout << "========================================" << std::endl;
     
     try {
         // Порт сервера
@@ -12,67 +14,118 @@ int main() {
         if (std::getenv("PORT")) {
             port = std::stoi(std::getenv("PORT"));
         }
+        std::cout << "[INFO] Server port: " << port << std::endl;
+        
+        // Проверяем все DB переменные окружения
+        std::cout << "\n[DEBUG] Checking environment variables:" << std::endl;
+        
+        const char* db_url = std::getenv("DATABASE_URL");
+        std::cout << "DATABASE_URL: " << (db_url ? "SET" : "NOT SET") << std::endl;
+        if (db_url) {
+            // Показываем замаскированный URL
+            std::string url_str(db_url);
+            size_t at_pos = url_str.find("@");
+            if (at_pos != std::string::npos) {
+                std::cout << "DATABASE_URL format: " << url_str.substr(0, url_str.find("://") + 3) 
+                         << "****:****" << url_str.substr(at_pos) << std::endl;
+            }
+        }
+        
+        const char* pghost = std::getenv("PGHOST");
+        const char* pgport = std::getenv("PGPORT");
+        const char* pgdb = std::getenv("PGDATABASE");
+        const char* pguser = std::getenv("PGUSER");
+        const char* pgpass = std::getenv("PGPASSWORD");
+        
+        std::cout << "PGHOST: " << (pghost ? pghost : "NOT SET") << std::endl;
+        std::cout << "PGPORT: " << (pgport ? pgport : "NOT SET") << std::endl;
+        std::cout << "PGDATABASE: " << (pgdb ? pgdb : "NOT SET") << std::endl;
+        std::cout << "PGUSER: " << (pguser ? pguser : "NOT SET") << std::endl;
+        std::cout << "PGPASSWORD: " << (pgpass ? "SET" : "NOT SET") << std::endl;
         
         drogon::app()
             .setLogLevel(trantor::Logger::kInfo)
             .addListener("0.0.0.0", port)
             .setThreadNum(4);
         
-        // Парсинг DATABASE_URL от Railway
-        std::string database_url = std::getenv("DATABASE_URL") ? std::getenv("DATABASE_URL") : "";
+        std::string db_host, db_name, db_user, db_password;
+        int db_port = 5432;
         
-        if (database_url.empty()) {
-            std::cerr << "❌ ERROR: DATABASE_URL not set!" << std::endl;
-            std::cerr << "Set it in Railway dashboard or use local config" << std::endl;
+        // Попробуем получить из отдельных переменных (Railway может их дать)
+        if (pghost && pgdb && pguser && pgpass) {
+            std::cout << "\n[INFO] Using individual PG* variables" << std::endl;
+            db_host = pghost;
+            db_name = pgdb;
+            db_user = pguser;
+            db_password = pgpass;
+            if (pgport) {
+                db_port = std::stoi(pgport);
+            }
+        }
+        // Иначе парсим DATABASE_URL
+        else if (db_url) {
+            std::cout << "\n[INFO] Parsing DATABASE_URL" << std::endl;
+            std::string database_url(db_url);
+            
+            // Regex для парсинга: postgresql://user:password@host:port/database
+            std::regex url_regex("postgres(?:ql)?://([^:]+):([^@]*)@([^:]+):(\\d+)/([^?]+)");
+            std::smatch matches;
+            
+            if (std::regex_search(database_url, matches, url_regex)) {
+                db_user = matches[1];
+                db_password = matches[2];
+                db_host = matches[3];
+                db_port = std::stoi(matches[4]);
+                db_name = matches[5];
+                std::cout << "[INFO] Parsed successfully" << std::endl;
+            } else {
+                std::cerr << "[ERROR] Failed to parse DATABASE_URL!" << std::endl;
+                std::cerr << "[ERROR] Expected format: postgresql://user:password@host:port/database" << std::endl;
+                return 1;
+            }
+        } else {
+            std::cerr << "[ERROR] No database configuration found!" << std::endl;
+            std::cerr << "[ERROR] Set DATABASE_URL or PG* variables" << std::endl;
             return 1;
         }
         
-        std::cout << "DATABASE_URL found, parsing..." << std::endl;
-        
-        // Regex для парсинга: postgresql://user:password@host:port/database
-        std::regex url_regex("postgres(?:ql)?://([^:]+):([^@]*)@([^:]+):(\\d+)/([^?]+)");
-        std::smatch matches;
-        
-        if (!std::regex_search(database_url, matches, url_regex)) {
-            std::cerr << "❌ ERROR: Invalid DATABASE_URL format!" << std::endl;
-            std::cerr << "Expected: postgresql://user:password@host:port/database" << std::endl;
-            return 1;
-        }
-        
-        std::string db_user = matches[1];
-        std::string db_password = matches[2];
-        std::string db_host = matches[3];
-        int db_port = std::stoi(matches[4]);
-        std::string db_name = matches[5];
-        
-        std::cout << "Database config:" << std::endl;
+        std::cout << "\n[INFO] Database configuration:" << std::endl;
         std::cout << "  Host: " << db_host << std::endl;
         std::cout << "  Port: " << db_port << std::endl;
         std::cout << "  Database: " << db_name << std::endl;
         std::cout << "  User: " << db_user << std::endl;
+        std::cout << "  Password: " << (db_password.empty() ? "EMPTY" : "SET") << std::endl;
+        
+        std::cout << "\n[INFO] Creating database client..." << std::endl;
         
         // Создаём клиент БД
-        drogon::app().createDbClient(
-            "postgresql",
-            db_host,
-            db_port,
-            db_name,
-            db_user,
-            db_password,
-            10,           // connection pool size
-            "",           // filename (unused for PostgreSQL)
-            "default",    // client name
-            false,        // is_fast mode
-            "utf8"        // character set
-        );
+        try {
+            drogon::app().createDbClient(
+                "postgresql",
+                db_host,
+                db_port,
+                db_name,
+                db_user,
+                db_password,
+                10,
+                "",
+                "default",
+                false,
+                "utf8"
+            );
+            std::cout << "[SUCCESS] Database client created!" << std::endl;
+        } catch (const std::exception &e) {
+            std::cerr << "[ERROR] Failed to create DB client: " << e.what() << std::endl;
+            return 1;
+        }
         
-        std::cout << "✅ Database client created successfully" << std::endl;
-        std::cout << "🚀 Starting HTTP server on http://0.0.0.0:" << port << std::endl;
+        std::cout << "\n[SUCCESS] Starting HTTP server on http://0.0.0.0:" << port << std::endl;
+        std::cout << "========================================\n" << std::endl;
         
         drogon::app().run();
         
     } catch (const std::exception &e) {
-        std::cerr << "❌ Fatal error: " << e.what() << std::endl;
+        std::cerr << "[FATAL] " << e.what() << std::endl;
         return 1;
     }
     
