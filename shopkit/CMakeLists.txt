@@ -24,7 +24,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(${PROJECT_NAME} main.cc
         controllers/ShopController.cc
         controllers/ProductController.cc
-        controllers/OrderController.cc)
+        controllers/OrderController.cc
+        controllers/UploadController.cc
+        filters/CorsFilter.cpp
+        filters/RateLimitFilter.cpp)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -85,7 +88,8 @@ drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
 
 target_include_directories(${PROJECT_NAME}
                            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-                                   ${CMAKE_CURRENT_SOURCE_DIR}/models)
+                                   ${CMAKE_CURRENT_SOURCE_DIR}/models
+                                   ${CMAKE_CURRENT_SOURCE_DIR}/utils)
 target_sources(${PROJECT_NAME}
                PRIVATE
                ${SRC_DIR}
