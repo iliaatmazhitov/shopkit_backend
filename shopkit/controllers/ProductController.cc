@@ -1,4 +1,5 @@
 #include "ProductController.h"
+#include "utils/UuidGenerator.h"
 #include <drogon/orm/DbClient.h>
 
 using namespace drogon;
@@ -159,6 +160,9 @@ void ProductController::createProduct(
     int stock_count = json->get("stock_count", 0).asInt();
     std::string category = json->get("category", "").asString();
 
+    // ✅ Генерируем UUID в C++
+    std::string product_id = UuidGenerator::generate();
+
     auto dbClient = app().getDbClient();
     if (!dbClient) {
         Json::Value error;
@@ -170,8 +174,8 @@ void ProductController::createProduct(
     }
 
     std::string sql = R"(
-        INSERT INTO products (shop_id, title, price, currency, image_url, description, stock_count, category)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO products (product_id, shop_id, title, price, currency, image_url, description, stock_count, category)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING product_id, created_at
     )";
 
@@ -201,7 +205,7 @@ void ProductController::createProduct(
                 resp->setStatusCode(k500InternalServerError);
                 callback(resp);
             },
-            shop_id, title, price, currency, image_url, description, stock_count, category
+            product_id, shop_id, title, price, currency, image_url, description, stock_count, category
     );
 }
 

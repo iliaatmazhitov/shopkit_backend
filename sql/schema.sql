@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS shops (
 CREATE TABLE IF NOT EXISTS products (
                                         id SERIAL PRIMARY KEY,
                                         shop_id INTEGER NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
-    product_id UUID DEFAULT gen_random_uuid() UNIQUE,
+    product_id VARCHAR(36) UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
     price INTEGER NOT NULL CHECK (price > 0),
     currency VARCHAR(3) DEFAULT 'RUB',
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS orders (
                                       id SERIAL PRIMARY KEY,
                                       shop_id INTEGER NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
-    order_id UUID DEFAULT gen_random_uuid() UNIQUE,
+    order_id VARCHAR(36) UNIQUE NOT NULL,
     customer_name VARCHAR(255),
     telegram_user_id BIGINT,
     customer_phone VARCHAR(20),
@@ -63,7 +63,9 @@ CREATE TABLE IF NOT EXISTS shop_admins (
     );
 
 CREATE INDEX IF NOT EXISTS idx_products_shop_id ON products(shop_id);
+CREATE INDEX IF NOT EXISTS idx_products_product_id ON products(product_id);
 CREATE INDEX IF NOT EXISTS idx_orders_shop_id ON orders(shop_id);
+CREATE INDEX IF NOT EXISTS idx_orders_order_id ON orders(order_id);
 CREATE INDEX IF NOT EXISTS idx_orders_tg_user ON orders(telegram_user_id);
 CREATE INDEX IF NOT EXISTS idx_shops_token ON shops(shop_token);
 CREATE INDEX IF NOT EXISTS idx_shops_owner ON shops(owner_tg_id);
