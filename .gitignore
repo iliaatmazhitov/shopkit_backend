@@ -1,2 +1,21 @@
 # Project exclude paths
 /cmake-build-debug/
+
+# Build directories
+build/
+*/build/
+
+# CodeQL
+_codeql_build_dir/
+_codeql_detected_source_root
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
