@@ -1,6 +1,22 @@
 # ShopKit Backend
 
+> **🚀 Production Status:** LIVE at https://shopkit-backend.onrender.com/api
+
 Production-ready backend for Telegram Mini App e-commerce platform built with C++ and Drogon framework.
+
+## For Frontend Developers
+
+📚 **Complete Integration Guide:** See [FRONTEND_COMPLETE_GUIDE.md](./FRONTEND_COMPLETE_GUIDE.md)
+
+Quick start for building Telegram Mini Apps:
+- **Production API:** `https://shopkit-backend.onrender.com/api`
+- **Full TypeScript API client** with error handling and retry logic
+- **Production-ready React hooks** (useCart, useShop, useProducts, useOrders)
+- **Complete page components** ready to copy and use
+- **Telegram Mini App examples** with deep linking
+- **Testing guide** with real production examples
+
+**[📖 Read the complete frontend guide →](./FRONTEND_COMPLETE_GUIDE.md)**
 
 ## Features
 
