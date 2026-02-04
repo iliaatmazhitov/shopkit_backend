@@ -9,20 +9,17 @@ int main() {
     std::cout << "========================================" << std::endl;
     
     try {
-        // Порт сервера
         int port = 8080;
         if (std::getenv("PORT")) {
             port = std::stoi(std::getenv("PORT"));
         }
         std::cout << "[INFO] Server port: " << port << std::endl;
         
-        // Проверяем все DB переменные окружения
         std::cout << "\n[DEBUG] Checking environment variables:" << std::endl;
         
         const char* db_url = std::getenv("DATABASE_URL");
         std::cout << "DATABASE_URL: " << (db_url ? "SET" : "NOT SET") << std::endl;
         if (db_url) {
-            // Показываем замаскированный URL
             std::string url_str(db_url);
             size_t at_pos = url_str.find("@");
             if (at_pos != std::string::npos) {
@@ -51,7 +48,6 @@ int main() {
         std::string db_host, db_name, db_user, db_password;
         int db_port = 5432;
         
-        // Попробуем получить из отдельных переменных (Railway может их дать)
         if (pghost && pgdb && pguser && pgpass) {
             std::cout << "\n[INFO] Using individual PG* variables" << std::endl;
             db_host = pghost;
@@ -62,25 +58,31 @@ int main() {
                 db_port = std::stoi(pgport);
             }
         }
-        // Иначе парсим DATABASE_URL
         else if (db_url) {
             std::cout << "\n[INFO] Parsing DATABASE_URL" << std::endl;
             std::string database_url(db_url);
             
-            // Regex для парсинга: postgresql://user:password@host:port/database
-            std::regex url_regex("postgres(?:ql)?://([^:]+):([^@]*)@([^:]+):(\\d+)/([^?]+)");
+            // ✅ ОБНОВЛЁННЫЙ REGEX: порт опционален
+            std::regex url_regex("postgres(?:ql)?://([^:]+):([^@]*)@([^:/]+)(?::(\\d+))?/([^?]+)");
             std::smatch matches;
             
             if (std::regex_search(database_url, matches, url_regex)) {
                 db_user = matches[1];
                 db_password = matches[2];
                 db_host = matches[3];
-                db_port = std::stoi(matches[4]);
+                
+                // Порт опционален (группа 4)
+                if (matches[4].matched && !matches[4].str().empty()) {
+                    db_port = std::stoi(matches[4]);
+                } else {
+                    db_port = 5432; // По умолчанию
+                }
+                
                 db_name = matches[5];
                 std::cout << "[INFO] Parsed successfully" << std::endl;
             } else {
                 std::cerr << "[ERROR] Failed to parse DATABASE_URL!" << std::endl;
-                std::cerr << "[ERROR] Expected format: postgresql://user:password@host:port/database" << std::endl;
+                std::cerr << "[ERROR] Expected format: postgresql://user:password@host[:port]/database" << std::endl;
                 return 1;
             }
         } else {
@@ -98,7 +100,6 @@ int main() {
         
         std::cout << "\n[INFO] Creating database client..." << std::endl;
         
-        // Создаём клиент БД
         try {
             drogon::app().createDbClient(
                 "postgresql",
