@@ -6,17 +6,22 @@ Production-ready backend for Telegram Mini App e-commerce platform built with C+
 
 ## For Frontend Developers
 
-📚 **Complete Integration Guide:** See [FRONTEND_COMPLETE_GUIDE.md](./FRONTEND_COMPLETE_GUIDE.md)
+**📋 [API Endpoints Reference](./API_ENDPOINTS.md)** ← Начни здесь! Простой справочник всех endpoints
+
+**📚 [Complete Integration Guide](./FRONTEND_COMPLETE_GUIDE.md)** - полное руководство с TypeScript, React hooks и компонентами
 
 Quick start for building Telegram Mini Apps:
 - **Production API:** `https://shopkit-backend.onrender.com/api`
+- **13 API endpoints** - все документированы с примерами запросов/ответов
 - **Full TypeScript API client** with error handling and retry logic
 - **Production-ready React hooks** (useCart, useShop, useProducts, useOrders)
 - **Complete page components** ready to copy and use
 - **Telegram Mini App examples** with deep linking
 - **Testing guide** with real production examples
 
-**[📖 Read the complete frontend guide →](./FRONTEND_COMPLETE_GUIDE.md)**
+**Documentation:**
+- **[📋 API_ENDPOINTS.md](./API_ENDPOINTS.md)** - простой справочник: адрес + метод + JSON
+- **[📖 FRONTEND_COMPLETE_GUIDE.md](./FRONTEND_COMPLETE_GUIDE.md)** - полное руководство по интеграции
 
 ## Features
 

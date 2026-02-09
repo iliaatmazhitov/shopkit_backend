@@ -3,6 +3,8 @@
 > **Production API:** `https://shopkit-backend.onrender.com/api`  
 > **Status:** ✅ Production-ready
 
+> **🚀 Нужен просто список endpoints?** См. **[API_ENDPOINTS.md](./API_ENDPOINTS.md)** - простой справочник всех API с форматом запросов и ответов.
+
 ## Table of Contents
 
 1. [Quick Start](#quick-start)
