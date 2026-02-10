@@ -9,7 +9,8 @@ Production-ready backend for Telegram Mini App e-commerce platform built with C+
 **📋 [API Endpoints Reference](./API_ENDPOINTS.md)** ← Начни здесь! Простой справочник всех endpoints
 
 **Platform-specific Guides:**
-- **📱 [Flutter Guide](./FLUTTER_GUIDE.md)** - Android & iOS apps (Dart, Provider, full examples)
+- **🛒 [Flutter Admin Guide](./FLUTTER_ADMIN_GUIDE.md)** - **Для владельцев магазинов** (управление магазином, товарами, заказами)
+- **📱 [Flutter Customer Guide](./FLUTTER_GUIDE.md)** - **Для покупателей** (просмотр товаров, корзина, заказы)
 - **📚 [Web/Telegram Guide](./FRONTEND_COMPLETE_GUIDE.md)** - TypeScript, React hooks, Telegram Mini Apps
 
 Quick start:
@@ -22,7 +23,8 @@ Quick start:
 
 **Documentation:**
 - **[📋 API_ENDPOINTS.md](./API_ENDPOINTS.md)** - простой справочник: адрес + метод + JSON
-- **[📱 FLUTTER_GUIDE.md](./FLUTTER_GUIDE.md)** - полное руководство по Flutter (Android & iOS)
+- **[🛒 FLUTTER_ADMIN_GUIDE.md](./FLUTTER_ADMIN_GUIDE.md)** - Flutter для **владельцев магазинов**
+- **[📱 FLUTTER_GUIDE.md](./FLUTTER_GUIDE.md)** - Flutter для **покупателей**
 - **[📖 FRONTEND_COMPLETE_GUIDE.md](./FRONTEND_COMPLETE_GUIDE.md)** - полное руководство по Web/Telegram
 
 ## Features
