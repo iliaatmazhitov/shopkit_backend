@@ -8,20 +8,22 @@ Production-ready backend for Telegram Mini App e-commerce platform built with C+
 
 **📋 [API Endpoints Reference](./API_ENDPOINTS.md)** ← Начни здесь! Простой справочник всех endpoints
 
-**📚 [Complete Integration Guide](./FRONTEND_COMPLETE_GUIDE.md)** - полное руководство с TypeScript, React hooks и компонентами
+**Platform-specific Guides:**
+- **📱 [Flutter Guide](./FLUTTER_GUIDE.md)** - Android & iOS apps (Dart, Provider, full examples)
+- **📚 [Web/Telegram Guide](./FRONTEND_COMPLETE_GUIDE.md)** - TypeScript, React hooks, Telegram Mini Apps
 
-Quick start for building Telegram Mini Apps:
+Quick start:
 - **Production API:** `https://shopkit-backend.onrender.com/api`
 - **13 API endpoints** - все документированы с примерами запросов/ответов
-- **Full TypeScript API client** with error handling and retry logic
-- **Production-ready React hooks** (useCart, useShop, useProducts, useOrders)
-- **Complete page components** ready to copy and use
-- **Telegram Mini App examples** with deep linking
+- **Full TypeScript/Dart API client** with error handling and retry logic
+- **Production-ready code** - copy-paste ready examples
+- **Complete UI components** ready to use
 - **Testing guide** with real production examples
 
 **Documentation:**
 - **[📋 API_ENDPOINTS.md](./API_ENDPOINTS.md)** - простой справочник: адрес + метод + JSON
-- **[📖 FRONTEND_COMPLETE_GUIDE.md](./FRONTEND_COMPLETE_GUIDE.md)** - полное руководство по интеграции
+- **[📱 FLUTTER_GUIDE.md](./FLUTTER_GUIDE.md)** - полное руководство по Flutter (Android & iOS)
+- **[📖 FRONTEND_COMPLETE_GUIDE.md](./FRONTEND_COMPLETE_GUIDE.md)** - полное руководство по Web/Telegram
 
 ## Features
 
