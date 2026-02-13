@@ -1,6 +1,44 @@
-# ShopKit Backend
+# 🚀 ShopKit Backend
 
-Production-ready backend for Telegram Mini App e-commerce platform built with C++ and Drogon framework.
+> **Production Status:** ✅ LIVE at https://shopkit-backend.onrender.com/api
+
+Production-ready e-commerce backend for Telegram Mini Apps. Built with C++ and Drogon framework.
+
+---
+
+## 📖 **[START HERE → PROJECT_READY.md](./PROJECT_READY.md)** 
+
+**Полное руководство на русском языке** - все что нужно для старта проекта:
+- Быстрый старт за 5 минут
+- Архитектура системы
+- Документация для фронтенд-разработчиков
+- Инструкции по deployment
+- Чеклист готовности
+
+---
+
+## For Frontend Developers
+
+**📋 [API Endpoints Reference](./API_ENDPOINTS.md)** ← Начни здесь! Простой справочник всех endpoints
+
+**Platform-specific Guides:**
+- **🛒 [Flutter Admin Guide](./FLUTTER_ADMIN_GUIDE.md)** - **Для владельцев магазинов** (управление магазином, товарами, заказами)
+- **📱 [Flutter Customer Guide](./FLUTTER_GUIDE.md)** - **Для покупателей** (просмотр товаров, корзина, заказы)
+- **📚 [Web/Telegram Guide](./FRONTEND_COMPLETE_GUIDE.md)** - TypeScript, React hooks, Telegram Mini Apps
+
+Quick start:
+- **Production API:** `https://shopkit-backend.onrender.com/api`
+- **13 API endpoints** - все документированы с примерами запросов/ответов
+- **Full TypeScript/Dart API client** with error handling and retry logic
+- **Production-ready code** - copy-paste ready examples
+- **Complete UI components** ready to use
+- **Testing guide** with real production examples
+
+**Documentation:**
+- **[📋 API_ENDPOINTS.md](./API_ENDPOINTS.md)** - простой справочник: адрес + метод + JSON
+- **[🛒 FLUTTER_ADMIN_GUIDE.md](./FLUTTER_ADMIN_GUIDE.md)** - Flutter для **владельцев магазинов**
+- **[📱 FLUTTER_GUIDE.md](./FLUTTER_GUIDE.md)** - Flutter для **покупателей**
+- **[📖 FRONTEND_COMPLETE_GUIDE.md](./FRONTEND_COMPLETE_GUIDE.md)** - полное руководство по Web/Telegram
 
 ## Features
 
