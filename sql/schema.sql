@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS products (
     is_active BOOLEAN DEFAULT TRUE,
     category VARCHAR(100),
     tags TEXT[],
+    attributes JSONB DEFAULT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
     );
@@ -63,6 +64,7 @@ CREATE TABLE IF NOT EXISTS shop_admins (
     );
 
 CREATE INDEX IF NOT EXISTS idx_products_shop_id ON products(shop_id);
+CREATE INDEX IF NOT EXISTS idx_products_attributes ON products USING GIN (attributes);
 CREATE INDEX IF NOT EXISTS idx_orders_shop_id ON orders(shop_id);
 CREATE INDEX IF NOT EXISTS idx_orders_tg_user ON orders(telegram_user_id);
 CREATE INDEX IF NOT EXISTS idx_shops_token ON shops(shop_token);
