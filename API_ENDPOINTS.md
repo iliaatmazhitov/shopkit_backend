@@ -4,6 +4,22 @@
 
 Простой справочник всех API endpoints с форматом запросов и ответов.
 
+## 🎯 Новая функция: Attributes (Характеристики товара)
+
+С версии 2.0 товары поддерживают гибкое поле `attributes` (JSONB) для хранения любых характеристик:
+
+**Примеры использования:**
+- **Обувь:** `{"size": "42", "color": "black", "gender": "unisex"}`
+- **Одежда:** `{"size": "L", "color": "red", "material": "cotton"}`
+- **Телефоны:** `{"storage": "256GB", "color": "Titanium", "model": "Pro Max"}`
+- **Любое другое:** `{"custom_field_1": "value", "custom_field_2": "value"}`
+
+**Особенности:**
+- ✅ Универсальный конструктор - любые поля
+- ✅ Опционально - можно не использовать для простых товаров
+- ✅ Полностью совместимо с существующими товарами
+- ✅ Индексируется для быстрого поиска
+
 ---
 
 ## 🏪 Shop Endpoints
@@ -154,20 +170,46 @@ GET /api/products/{shop_id}
     "image_url": "https://example.com/image.jpg",
     "description": "Rich and bold espresso",
     "stock_count": 100,
-    "category": "Coffee"
+    "category": "Coffee",
+    "attributes": null
   },
   {
     "product_id": "660e8400-e29b-41d4-a716-446655440001",
-    "title": "Cappuccino",
-    "price": 350,
+    "title": "Nike Air Max",
+    "price": 5000,
     "currency": "RUB",
-    "image_url": "",
-    "description": "",
-    "stock_count": 50,
-    "category": "Coffee"
+    "image_url": "https://example.com/sneakers.jpg",
+    "description": "Comfortable running shoes",
+    "stock_count": 10,
+    "category": "Shoes",
+    "attributes": {
+      "size": "42",
+      "color": "black",
+      "gender": "unisex"
+    }
+  },
+  {
+    "product_id": "770e8400-e29b-41d4-a716-446655440002",
+    "title": "iPhone 15 Pro Max",
+    "price": 120000,
+    "currency": "RUB",
+    "image_url": "https://example.com/iphone.jpg",
+    "description": "Latest iPhone model",
+    "stock_count": 5,
+    "category": "Electronics",
+    "attributes": {
+      "storage": "256GB",
+      "color": "Natural Titanium",
+      "model": "Pro Max"
+    }
   }
 ]
 ```
+
+**Примечание:**
+- `attributes` - гибкое поле JSONB для вариантов товара
+- Может содержать любые характеристики: размер, цвет, модель, объем памяти и т.д.
+- `null` для простых товаров без вариантов
 
 ---
 
@@ -184,17 +226,22 @@ GET /api/products/detail/{product_id}
 ```json
 {
   "product_id": "550e8400-e29b-41d4-a716-446655440000",
-  "title": "Espresso",
-  "price": 250,
+  "title": "Nike Air Max",
+  "price": 5000,
   "currency": "RUB",
-  "image_url": "https://example.com/image.jpg",
-  "description": "Rich and bold espresso",
-  "stock_count": 100,
-  "category": "Coffee",
+  "image_url": "https://example.com/sneakers.jpg",
+  "description": "Comfortable running shoes",
+  "stock_count": 10,
+  "category": "Shoes",
+  "attributes": {
+    "size": "42",
+    "color": "black",
+    "gender": "unisex"
+  },
   "shop": {
     "id": 1,
-    "title": "My Coffee Shop",
-    "shop_token": "my_coffee_shop_1234"
+    "title": "My Shop",
+    "shop_token": "my_shop_1234"
   }
 }
 ```
@@ -224,13 +271,58 @@ X-Owner-TG-ID: 123456789  // обязательно - Telegram User ID влад�
 ```json
 {
   "shop_id": 1,                       // обязательно
-  "title": "Espresso",                // обязательно
-  "price": 250,                       // обязательно (в копейках/центах)
+  "title": "iPhone 15 Pro Max",       // обязательно
+  "price": 120000,                    // обязательно (в копейках/центах)
   "currency": "RUB",                  // опционально, по умолчанию "RUB"
   "image_url": "https://...",         // опционально
-  "description": "Description",       // опционально
-  "stock_count": 100,                 // опционально, по умолчанию 0
-  "category": "Coffee"                // опционально
+  "description": "Latest iPhone",     // опционально
+  "stock_count": 5,                   // опционально, по умолчанию 0
+  "category": "Electronics",          // опционально
+  "attributes": {                     // опционально - характеристики товара
+    "storage": "256GB",
+    "color": "Natural Titanium",
+    "model": "Pro Max"
+  }
+}
+```
+
+**Примеры с разными attributes:**
+
+1. **Обувь:**
+```json
+{
+  "shop_id": 1,
+  "title": "Nike Air Max",
+  "price": 5000,
+  "attributes": {
+    "size": "42",
+    "color": "black",
+    "gender": "unisex"
+  }
+}
+```
+
+2. **Одежда:**
+```json
+{
+  "shop_id": 1,
+  "title": "T-Shirt Supreme",
+  "price": 3000,
+  "attributes": {
+    "size": "L",
+    "color": "red",
+    "material": "cotton"
+  }
+}
+```
+
+3. **Товар без вариантов (простой):**
+```json
+{
+  "shop_id": 1,
+  "title": "Coffee Beans",
+  "price": 800
+  // attributes не указан - простой товар
 }
 ```
 
@@ -275,9 +367,44 @@ X-Owner-TG-ID: 123456789  // обязательно
 **Request Body:**
 ```json
 {
-  "title": "New Title",           // опционально
-  "price": 300,                   // опционально
-  "description": "New desc",      // опционально
+  "title": "New Title",               // опционально
+  "price": 300,                       // опционально
+  "description": "New desc",          // опционально
+  "image_url": "https://...",         // опционально
+  "stock_count": 50,                  // опционально
+  "category": "New Category",         // опционально
+  "attributes": {                     // опционально - обновить характеристики
+    "size": "43",
+    "color": "blue"
+  }
+}
+```
+
+**Примеры обновления:**
+
+1. **Изменить только размер:**
+```json
+{
+  "attributes": {
+    "size": "44",
+    "color": "black"  // нужно указать все attributes, они перезаписываются полностью
+  }
+}
+```
+
+2. **Убрать attributes (сделать простым товаром):**
+```json
+{
+  "attributes": null
+}
+```
+
+3. **Изменить только цену:**
+```json
+{
+  "price": 4500
+}
+```
   "image_url": "https://...",     // опционально
   "stock_count": 150,             // опционально
   "category": "New Category"      // опционально
