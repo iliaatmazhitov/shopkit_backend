@@ -1,5 +1,6 @@
 #include "ProductController.h"
 #include <drogon/orm/DbClient.h>
+#include <sstream>
 
 using namespace drogon;
 using namespace drogon::orm;
@@ -23,7 +24,7 @@ void ProductController::getProducts(
     }
 
     std::string sql = R"(
-        SELECT product_id, title, price, currency, image_url, description, stock_count, category
+        SELECT product_id, title, price, currency, image_url, description, stock_count, category, attributes
         FROM products
         WHERE shop_id = $1 AND is_active = true
         ORDER BY created_at DESC
@@ -44,6 +45,23 @@ void ProductController::getProducts(
                     product["description"] = row["description"].isNull() ? "" : row["description"].as<std::string>();
                     product["stock_count"] = row["stock_count"].isNull() ? 0 : row["stock_count"].as<int>();
                     product["category"] = row["category"].isNull() ? "" : row["category"].as<std::string>();
+                    
+                    // Parse attributes JSONB field
+                    if (!row["attributes"].isNull()) {
+                        std::string attributesStr = row["attributes"].as<std::string>();
+                        Json::CharReaderBuilder builder;
+                        Json::Value attributes;
+                        std::string errs;
+                        std::istringstream stream(attributesStr);
+                        if (Json::parseFromStream(builder, stream, &attributes, &errs)) {
+                            product["attributes"] = attributes;
+                        } else {
+                            product["attributes"] = Json::nullValue;
+                        }
+                    } else {
+                        product["attributes"] = Json::nullValue;
+                    }
+                    
                     response.append(product);
                 }
 
@@ -113,6 +131,22 @@ void ProductController::getProductDetail(
                 product["stock_count"] = row["stock_count"].isNull() ? 0 : row["stock_count"].as<int>();
                 product["category"] = row["category"].isNull() ? "" : row["category"].as<std::string>();
 
+                // Parse attributes JSONB field
+                if (!row["attributes"].isNull()) {
+                    std::string attributesStr = row["attributes"].as<std::string>();
+                    Json::CharReaderBuilder builder;
+                    Json::Value attributes;
+                    std::string errs;
+                    std::istringstream stream(attributesStr);
+                    if (Json::parseFromStream(builder, stream, &attributes, &errs)) {
+                        product["attributes"] = attributes;
+                    } else {
+                        product["attributes"] = Json::nullValue;
+                    }
+                } else {
+                    product["attributes"] = Json::nullValue;
+                }
+
                 product["shop"] = Json::objectValue;
                 product["shop"]["id"] = row["shop_id"].as<int>();
                 product["shop"]["title"] = row["shop_title"].as<std::string>();
@@ -158,6 +192,16 @@ void ProductController::createProduct(
     std::string currency = json->get("currency", "RUB").asString();
     int stock_count = json->get("stock_count", 0).asInt();
     std::string category = json->get("category", "").asString();
+    
+    // Handle attributes JSONB field
+    std::string attributes_str = "NULL";
+    bool has_attributes = false;
+    if (json->isMember("attributes") && !(*json)["attributes"].isNull()) {
+        Json::StreamWriterBuilder writer;
+        writer["indentation"] = "";
+        attributes_str = Json::writeString(writer, (*json)["attributes"]);
+        has_attributes = true;
+    }
 
     auto dbClient = app().getDbClient();
     if (!dbClient) {
@@ -170,8 +214,8 @@ void ProductController::createProduct(
     }
 
     std::string sql = R"(
-        INSERT INTO products (shop_id, title, price, currency, image_url, description, stock_count, category)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO products (shop_id, title, price, currency, image_url, description, stock_count, category, attributes)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
         RETURNING product_id, created_at
     )";
 
@@ -201,7 +245,8 @@ void ProductController::createProduct(
                 resp->setStatusCode(k500InternalServerError);
                 callback(resp);
             },
-            shop_id, title, price, currency, image_url, description, stock_count, category
+            shop_id, title, price, currency, image_url, description, stock_count, category, 
+            has_attributes ? attributes_str : "null"
     );
 }
 
@@ -235,10 +280,10 @@ void ProductController::updateProduct(
     std::vector<std::string> setClauses;
     int paramIndex = 1;
 
-    std::string title_val, description_val, image_url_val, category_val;
+    std::string title_val, description_val, image_url_val, category_val, attributes_val;
     int price_val = 0, stock_count_val = 0;
     bool has_title = false, has_price = false, has_description = false;
-    bool has_image_url = false, has_stock_count = false, has_category = false;
+    bool has_image_url = false, has_stock_count = false, has_category = false, has_attributes = false;
 
     if (json->isMember("title")) {
         setClauses.push_back("title = $" + std::to_string(paramIndex++));
@@ -275,6 +320,18 @@ void ProductController::updateProduct(
         category_val = (*json)["category"].asString();
         has_category = true;
     }
+    
+    if (json->isMember("attributes")) {
+        setClauses.push_back("attributes = $" + std::to_string(paramIndex++) + "::jsonb");
+        if ((*json)["attributes"].isNull()) {
+            attributes_val = "null";
+        } else {
+            Json::StreamWriterBuilder writer;
+            writer["indentation"] = "";
+            attributes_val = Json::writeString(writer, (*json)["attributes"]);
+        }
+        has_attributes = true;
+    }
 
     if (setClauses.empty()) {
         Json::Value error;
@@ -306,6 +363,7 @@ void ProductController::updateProduct(
         if (has_image_url) binder << image_url_val;
         if (has_stock_count) binder << stock_count_val;
         if (has_category) binder << category_val;
+        if (has_attributes) binder << attributes_val;
 
         binder << product_id;
 
