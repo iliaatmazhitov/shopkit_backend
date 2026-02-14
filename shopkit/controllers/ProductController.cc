@@ -11,7 +11,6 @@ void ProductController::getProducts(
         int shop_id)
 {
     LOG_INFO << "GET /api/products/" << shop_id;
-
     auto dbClient = app().getDbClient();
     if (!dbClient) {
         LOG_ERROR << "Database client is null!";

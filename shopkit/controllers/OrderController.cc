@@ -161,7 +161,6 @@ void OrderController::getUserOrders(const HttpRequestPtr &req,
 
                 response.append(order);
             }
-
             auto resp = HttpResponse::newHttpJsonResponse(response);
             callback(resp);
         },

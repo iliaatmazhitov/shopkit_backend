@@ -360,7 +360,6 @@ void ShopController::updateShop(
                 if (has_currency) binder << currency_val;
 
                 binder << shop_token;
-
                 binder >> [callback, shop_token](const Result &result) {
                     if (result.empty()) {
                         Json::Value error;

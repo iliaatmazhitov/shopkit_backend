@@ -96,7 +96,6 @@
             //is_fast: 
             "is_fast": false
         },
-        // directory: The directory where the controller source files are stored.
         "directory": "controllers",
         // generate_base_only: false by default. Set to true to avoid overwriting custom subclasses.
         "generate_base_only": false

@@ -29,7 +29,6 @@ public:
                       Delete);
 
     METHOD_LIST_END
-
     void getProducts(const HttpRequestPtr &req,
                      std::function<void(const HttpResponsePtr &)> &&callback,
                      int shop_id);

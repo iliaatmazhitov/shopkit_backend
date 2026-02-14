@@ -16,7 +16,6 @@ int main() {
         std::cout << "[INFO] Server port: " << port << std::endl;
         
         std::cout << "\n[DEBUG] Checking environment variables:" << std::endl;
-        
         const char* db_url = std::getenv("DATABASE_URL");
         std::cout << "DATABASE_URL: " << (db_url ? "SET" : "NOT SET") << std::endl;
         if (db_url) {

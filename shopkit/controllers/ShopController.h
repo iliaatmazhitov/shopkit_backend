@@ -19,7 +19,6 @@ public:
         ADD_METHOD_TO(ShopController::updateShop,
                       "/api/shops/{1}",
                       Put);
-
     METHOD_LIST_END
 
     void getShopByToken(const HttpRequestPtr &req,

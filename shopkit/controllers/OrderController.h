@@ -15,7 +15,6 @@ public:
         ADD_METHOD_TO(OrderController::getUserOrders,
                       "/api/user/orders/{1}",
                       Get);
-
     METHOD_LIST_END
 
     void createOrder(const HttpRequestPtr &req,

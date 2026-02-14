@@ -21,7 +21,6 @@ public:
                       Delete);
 
     METHOD_LIST_END
-
     void saveCart(const HttpRequestPtr &req,
                   std::function<void(const HttpResponsePtr &)> &&callback);
 

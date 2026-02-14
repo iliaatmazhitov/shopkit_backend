@@ -117,7 +117,6 @@ void CartController::getCart(const HttpRequestPtr &req,
         callback(resp);
         return;
     }
-
     std::string sql = R"(
         SELECT items, updated_at
         FROM carts

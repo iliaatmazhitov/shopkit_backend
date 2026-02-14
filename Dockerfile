@@ -42,7 +42,6 @@ RUN mkdir -p /app/shopkit/build/uploads/products /app/shopkit/build/logs
 # Set working directory to build output
 WORKDIR /app/shopkit/build
 
-# Expose port
 EXPOSE 8080
 
 # Run application

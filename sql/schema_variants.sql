@@ -104,3 +104,5 @@ COMMENT ON TABLE product_variants IS 'Product variants - each variant has own pr
 COMMENT ON COLUMN product_variants.attributes IS 'JSONB field storing variant-specific attributes like {"storage": "256GB", "color": "Black"}';
 COMMENT ON COLUMN product_variants.is_default IS 'Marks the default variant to show when displaying product list';
 COMMENT ON COLUMN product_variants.sort_order IS 'Custom ordering for variants (lower numbers first)';
+
+
